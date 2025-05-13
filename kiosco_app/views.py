@@ -443,9 +443,30 @@ def cierre_caja(request):
 def historial_caja(request):
     # Solo administradores pueden ver el historial completo
     if request.user.tipo_usuario == Usuario.ADMIN:
-        cajas = Caja.objects.all().order_by('-fecha_hora')
+        registros = Caja.objects.all().order_by('-fecha_hora')
     else:
         # Empleados solo ven su historial
-        cajas = Caja.objects.filter(usuario=request.user).order_by('-fecha_hora')
+        registros = Caja.objects.filter(usuario=request.user).order_by('-fecha_hora')
     
-    return render(request, 'kiosco_app/historial_caja.html', {'cajas': cajas})
+    # Verificar si hay una caja abierta para el usuario actual
+    # Buscamos la última apertura de caja del usuario que no tenga un cierre posterior
+    ultima_apertura = Caja.objects.filter(
+        usuario=request.user,
+        tipo_operacion=Caja.APERTURA
+    ).order_by('-fecha_hora').first()
+    
+    caja_abierta = False
+    if ultima_apertura:
+        # Verificar si hay un cierre posterior a la última apertura
+        cierre_posterior = Caja.objects.filter(
+            usuario=request.user,
+            tipo_operacion=Caja.CIERRE,
+            fecha_hora__gt=ultima_apertura.fecha_hora
+        ).exists()
+        
+        caja_abierta = not cierre_posterior
+    
+    return render(request, 'kiosco_app/historial_caja.html', {
+        'registros': registros,
+        'caja_abierta': caja_abierta
+    })

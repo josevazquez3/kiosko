@@ -88,7 +88,7 @@
                     {% csrf_token %}
                     <div class="form-actions">
                         <a href="{% url 'agregar_detalle_venta' venta.id %}" class="btn btn-secondary">Cancelar</a>
-                        <button type="submit" class="btn">Confirmar Finalización</button>
+                        <button type="submit" class="btn btn-cerrar-caja">Cerrar Caja</button>
                     </div>
                 </form>
             </div>
@@ -141,6 +141,20 @@
         display: flex;
         gap: 0.5rem;
         margin-top: 1rem;
+    }
+    
+    .btn-cerrar-caja {
+        background-color: #28a745;
+        color: white;
+        font-weight: bold;
+        padding: 0.75rem 1.5rem;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-cerrar-caja:hover {
+        background-color: #218838;
+        transform: scale(1.05);
     }
     
     .messages {
