@@ -1,0 +1,72 @@
+{% extends 'kiosco_app/base.html' %}
+
+{% block content %}
+<h1>Panel de Control</h1>
+
+<div class="dashboard-stats">
+    <div class="card">
+        <div class="card-header">Productos</div>
+        <div class="card-body">
+            <p>Total de productos: {{ total_productos }}</p>
+            <p>Productos sin stock: {{ productos_sin_stock }}</p>
+            <a href="{% url 'lista_productos' %}" class="btn">Ver productos</a>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">Ventas de hoy</div>
+        <div class="card-body">
+            <p>Ventas realizadas: {{ ventas_hoy }}</p>
+            <p>Ingresos: ${{ ingresos_hoy }}</p>
+            <a href="{% url 'nueva_venta' %}" class="btn">Nueva venta</a>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">Caja</div>
+        <div class="card-body">
+            {% if caja_abierta %}
+            <p>Estado: <span style="color: green;">Abierta</span></p>
+            <a href="{% url 'cierre_caja' %}" class="btn">Cerrar caja</a>
+            {% else %}
+            <p>Estado: <span style="color: red;">Cerrada</span></p>
+            <a href="{% url 'apertura_caja' %}" class="btn">Abrir caja</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-actions">
+    <h2>Acciones rápidas</h2>
+    <div class="actions-grid">
+        <a href="{% url 'crear_producto' %}" class="btn">Agregar producto</a>
+        <a href="{% url 'nueva_venta' %}" class="btn">Realizar venta</a>
+        <a href="{% url 'lista_ventas' %}" class="btn">Ver historial de ventas</a>
+        <a href="{% url 'historial_caja' %}" class="btn">Ver historial de caja</a>
+    </div>
+</div>
+
+<style>
+    .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .card {
+        height: 100%;
+    }
+    
+    .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
+    .actions-grid .btn {
+        display: block;
+        text-align: center;
+    }
+</style>
+{% endblock %}

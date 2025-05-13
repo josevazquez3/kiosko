@@ -1,0 +1,128 @@
+{% extends 'kiosco_app/base.html' %}
+
+{% block content %}
+<div class="productos-container">
+    <div class="header-actions">
+        <h1>Productos</h1>
+        <a href="{% url 'crear_producto' %}" class="btn">Nuevo Producto</a>
+    </div>
+    
+    {% if productos %}
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for producto in productos %}
+                <tr>
+                    <td>{{ producto.nombre }}</td>
+                    <td>${{ producto.precio }}</td>
+                    <td>
+                        {% if producto.stock == 0 %}
+                        <span class="badge badge-danger">Sin stock</span>
+                        {% else %}
+                        {{ producto.stock }}
+                        {% endif %}
+                    </td>
+                    <td class="actions">
+                        <a href="{% url 'detalle_producto' producto.id %}" class="btn-sm">Ver</a>
+                        <a href="{% url 'editar_producto' producto.id %}" class="btn-sm">Editar</a>
+                        <a href="{% url 'eliminar_producto' producto.id %}" class="btn-sm btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No hay productos registrados.</p>
+        <a href="{% url 'crear_producto' %}" class="btn">Agregar Producto</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+    
+    .table th, .table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .table th {
+        background-color: var(--highlight-color);
+        font-weight: bold;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    .badge {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+    }
+    
+    .badge-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    
+    .btn-sm {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 0.875rem;
+        margin-right: 0.25rem;
+    }
+    
+    .btn-sm:hover {
+        background-color: var(--secondary-color);
+    }
+    
+    .btn-danger {
+        background-color: #dc3545;
+    }
+    
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+    
+    .actions {
+        white-space: nowrap;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        background-color: var(--highlight-color);
+        border-radius: 4px;
+    }
+</style>
+{% endblock %}

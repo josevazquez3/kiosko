@@ -1,0 +1,100 @@
+{% extends 'kiosco_app/base.html' %}
+
+{% block content %}
+<div class="confirmar-eliminar-container">
+    <div class="header-actions">
+        <h1>Confirmar Eliminación</h1>
+        <a href="{% url 'lista_usuarios' %}" class="btn btn-secondary">Volver</a>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">¿Estás seguro de que deseas eliminar este usuario?</div>
+        <div class="card-body">
+            <div class="info-group">
+                <span class="info-label">Usuario:</span>
+                <span class="info-value">{{ usuario.username }}</span>
+            </div>
+            <div class="info-group">
+                <span class="info-label">Nombre:</span>
+                <span class="info-value">{{ usuario.get_full_name }}</span>
+            </div>
+            <div class="info-group">
+                <span class="info-label">Email:</span>
+                <span class="info-value">{{ usuario.email }}</span>
+            </div>
+            <div class="info-group">
+                <span class="info-label">Tipo:</span>
+                <span class="info-value">
+                    {% if usuario.tipo_usuario == 'admin' %}
+                    Administrador
+                    {% else %}
+                    Empleado
+                    {% endif %}
+                </span>
+            </div>
+            
+            <div class="warning-message">
+                <p><strong>Advertencia:</strong> Esta acción no se puede deshacer. Se recomienda desactivar el usuario en lugar de eliminarlo para mantener la integridad de los datos históricos.</p>
+            </div>
+            
+            <div class="action-buttons">
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Eliminar Permanentemente</button>
+                    <a href="{% url 'desactivar_usuario' usuario.id %}" class="btn">Desactivar Usuario</a>
+                    <a href="{% url 'lista_usuarios' %}" class="btn btn-secondary">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .confirmar-eliminar-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .info-group {
+        display: grid;
+        grid-template-columns: 150px 1fr;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .info-label {
+        font-weight: bold;
+    }
+    
+    .warning-message {
+        margin: 1.5rem 0;
+        padding: 1rem;
+        background-color: #fff3cd;
+        border-left: 4px solid #ffc107;
+        color: #856404;
+        border-radius: 4px;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+    
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+</style>
+{% endblock %}

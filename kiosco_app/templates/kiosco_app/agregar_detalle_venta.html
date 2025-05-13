@@ -1,0 +1,228 @@
+{% extends 'kiosco_app/base.html' %}
+
+{% block content %}
+<div class="agregar-detalle-venta-container">
+    <div class="header-actions">
+        <h1>Agregar Productos a la Venta #{{ venta.id }}</h1>
+        <div class="action-buttons">
+            <a href="{% url 'lista_ventas' %}" class="btn btn-secondary">Cancelar</a>
+            <a href="{% url 'finalizar_venta' venta.id %}" class="btn">Finalizar Venta</a>
+        </div>
+    </div>
+    
+    <div class="venta-info">
+        <div class="card">
+            <div class="card-header">Información de la Venta</div>
+            <div class="card-body">
+                <div class="info-group">
+                    <span class="info-label">Fecha:</span>
+                    <span class="info-value">{{ venta.fecha|date:"d/m/Y H:i" }}</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Usuario:</span>
+                    <span class="info-value">{{ venta.usuario.username }}</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Total:</span>
+                    <span class="info-value">${{ total }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="agregar-producto">
+                <div class="card">
+                    <div class="card-header">Agregar Producto</div>
+                    <div class="card-body">
+                        <form method="post" action="{% url 'agregar_detalle_venta' venta.id %}">
+                            {% csrf_token %}
+                            
+                            {% if messages %}
+                            <div class="messages">
+                                {% for message in messages %}
+                                <div class="message message-{{ message.tags }}">
+                                    {{ message }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            
+                            <div class="form-group">
+                                <label for="id_producto">Producto:</label>
+                                {{ form.producto }}
+                                {% if form.producto.errors %}
+                                <div class="message message-error">
+                                    {{ form.producto.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="id_cantidad">Cantidad:</label>
+                                {{ form.cantidad }}
+                                {% if form.cantidad.errors %}
+                                <div class="message message-error">
+                                    {{ form.cantidad.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" name="agregar_otro" value="1" class="btn">Agregar y Continuar</button>
+                                <button type="submit" class="btn">Agregar y Finalizar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="detalles-venta">
+                <div class="card">
+                    <div class="card-header">Productos en esta venta</div>
+                    <div class="card-body">
+                        {% if detalles %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio</th>
+                                        <th>Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for detalle in detalles %}
+                                    <tr>
+                                        <td>{{ detalle.producto.nombre }}</td>
+                                        <td>{{ detalle.cantidad }}</td>
+                                        <td>${{ detalle.precio_unitario }}</td>
+                                        <td>${{ detalle.subtotal }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" class="text-right"><strong>Total:</strong></td>
+                                        <td><strong>${{ total }}</strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="empty-message">No hay productos agregados a esta venta.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .agregar-detalle-venta-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .venta-info {
+        margin-bottom: 1.5rem;
+    }
+    
+    .info-group {
+        display: grid;
+        grid-template-columns: 100px 1fr;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .info-label {
+        font-weight: bold;
+    }
+    
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -0.75rem;
+    }
+    
+    .col-md-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+        padding: 0 0.75rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .messages {
+        margin-bottom: 1rem;
+    }
+    
+    .message {
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+        border-radius: 4px;
+    }
+    
+    .message-error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+    
+    .message-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    
+    .empty-message {
+        font-style: italic;
+        color: #6c757d;
+    }
+    
+    @media (max-width: 768px) {
+        .col-md-6 {
+            flex: 0 0 100%;
+            max-width: 100%;
+            margin-bottom: 1.5rem;
+        }
+        
+        .header-actions {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+    }
+</style>
+{% endblock %}

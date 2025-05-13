@@ -1,0 +1,120 @@
+{% extends 'kiosco_app/base.html' %}
+
+{% block content %}
+<div class="historial-caja-container">
+    <div class="header-actions">
+        <h1>Historial de Caja</h1>
+        <div>
+            {% if caja_abierta %}
+            <a href="{% url 'cierre_caja' %}" class="btn">Cerrar Caja</a>
+            {% else %}
+            <a href="{% url 'apertura_caja' %}" class="btn">Abrir Caja</a>
+            {% endif %}
+        </div>
+    </div>
+    
+    {% if registros %}
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Usuario</th>
+                    <th>Operación</th>
+                    <th>Monto Inicial</th>
+                    <th>Monto Final</th>
+                    <th>Observaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for registro in registros %}
+                <tr>
+                    <td>{{ registro.fecha_hora|date:"d/m/Y H:i" }}</td>
+                    <td>{{ registro.usuario.username }}</td>
+                    <td>
+                        {% if registro.tipo_operacion == 'apertura' %}
+                        <span class="badge badge-success">Apertura</span>
+                        {% else %}
+                        <span class="badge badge-info">Cierre</span>
+                        {% endif %}
+                    </td>
+                    <td>${{ registro.monto_inicial }}</td>
+                    <td>
+                        {% if registro.tipo_operacion == 'cierre' %}
+                        ${{ registro.monto_final }}
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td>{{ registro.observaciones|default:"-" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No hay registros de operaciones de caja.</p>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .historial-caja-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    
+    .header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+    
+    .table th, .table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .table th {
+        background-color: var(--highlight-color);
+        font-weight: bold;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    .badge {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+    }
+    
+    .badge-success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    
+    .badge-info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        background-color: var(--highlight-color);
+        border-radius: 4px;
+    }
+</style>
+{% endblock %}

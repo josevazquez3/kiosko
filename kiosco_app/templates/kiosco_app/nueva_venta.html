@@ -1,0 +1,183 @@
+{% extends 'kiosco_app/base.html' %}
+
+{% block content %}
+<div class="nueva-venta-container">
+    <div class="header-actions">
+        <h1>Nueva Venta</h1>
+        <a href="{% url 'lista_ventas' %}" class="btn btn-secondary">Volver</a>
+    </div>
+    
+    {% if not venta %}
+    <div class="card">
+        <div class="card-header">Iniciar Venta</div>
+        <div class="card-body">
+            <form method="post" action="{% url 'nueva_venta' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn">Iniciar Nueva Venta</button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="venta-info">
+        <div class="card">
+            <div class="card-header">Venta #{{ venta.id }}</div>
+            <div class="card-body">
+                <div class="info-group">
+                    <span class="info-label">Fecha:</span>
+                    <span class="info-value">{{ venta.fecha|date:"d/m/Y H:i" }}</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Usuario:</span>
+                    <span class="info-value">{{ venta.usuario.username }}</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Total:</span>
+                    <span class="info-value">${{ venta.total }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="agregar-producto">
+        <div class="card">
+            <div class="card-header">Agregar Producto</div>
+            <div class="card-body">
+                <form method="post" action="{% url 'agregar_detalle_venta' venta.id %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="id_producto">Producto:</label>
+                        {{ form.producto }}
+                        {% if form.producto.errors %}
+                        <div class="message message-error">
+                            {{ form.producto.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_cantidad">Cantidad:</label>
+                        {{ form.cantidad }}
+                        {% if form.cantidad.errors %}
+                        <div class="message message-error">
+                            {{ form.cantidad.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <button type="submit" class="btn">Agregar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="detalles-venta">
+        <h2>Productos en esta venta</h2>
+        {% if venta.detalles.all %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for detalle in venta.detalles.all %}
+                    <tr>
+                        <td>{{ detalle.producto.nombre }}</td>
+                        <td>{{ detalle.cantidad }}</td>
+                        <td>${{ detalle.precio_unitario }}</td>
+                        <td>${{ detalle.subtotal }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-right"><strong>Total:</strong></td>
+                        <td><strong>${{ venta.total }}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        
+        <div class="finalizar-venta">
+            <a href="{% url 'finalizar_venta' venta.id %}" class="btn">Finalizar Venta</a>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <p>No hay productos agregados a esta venta.</p>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .nueva-venta-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .venta-info, .agregar-producto, .detalles-venta {
+        margin-bottom: 1.5rem;
+    }
+    
+    .info-group {
+        display: grid;
+        grid-template-columns: 100px 1fr;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .info-label {
+        font-weight: bold;
+    }
+    
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+    
+    .table th, .table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .table th {
+        background-color: var(--highlight-color);
+        font-weight: bold;
+    }
+    
+    .table tfoot td {
+        border-top: 2px solid var(--border-color);
+        border-bottom: none;
+    }
+    
+    .text-right {
+        text-align: right;
+    }
+    
+    .finalizar-venta {
+        margin-top: 1rem;
+        text-align: right;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 1rem;
+        background-color: var(--highlight-color);
+        border-radius: 4px;
+    }
+</style>
+{% endblock %}

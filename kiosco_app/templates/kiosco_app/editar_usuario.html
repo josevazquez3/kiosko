@@ -1,0 +1,131 @@
+{% extends 'kiosco_app/base.html' %}
+
+{% block content %}
+<div class="editar-usuario-container">
+    <h1>Editar Usuario</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="id_username">Nombre de usuario:</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                    <div class="error-message">{{ form.username.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_first_name">Nombre:</label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                    <div class="error-message">{{ form.first_name.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_last_name">Apellido:</label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                    <div class="error-message">{{ form.last_name.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_email">Email:</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                    <div class="error-message">{{ form.email.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_tipo_usuario">Tipo de usuario:</label>
+                    {{ form.tipo_usuario }}
+                    {% if form.tipo_usuario.errors %}
+                    <div class="error-message">{{ form.tipo_usuario.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_password1">Contraseña (dejar en blanco para mantener la actual):</label>
+                    {{ form.password1 }}
+                    {% if form.password1.errors %}
+                    <div class="error-message">{{ form.password1.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_password2">Confirmar contraseña:</label>
+                    {{ form.password2 }}
+                    {% if form.password2.errors %}
+                    <div class="error-message">{{ form.password2.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn">Guardar Cambios</button>
+                    <a href="{% url 'lista_usuarios' %}" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .editar-usuario-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .card {
+        background-color: var(--bg-secondary);
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-top: 1.5rem;
+    }
+    
+    .card-body {
+        padding: 1.5rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+    }
+    
+    .error-message {
+        color: var(--error-color);
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+    
+    .btn-secondary {
+        background-color: var(--bg-tertiary);
+        color: var(--text-primary);
+    }
+</style>
+{% endblock %}

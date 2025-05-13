@@ -1,0 +1,97 @@
+{% extends 'kiosco_app/base.html' %}
+
+{% block content %}
+<div class="ventas-container">
+    <div class="header-actions">
+        <h1>Ventas</h1>
+        <a href="{% url 'nueva_venta' %}" class="btn">Nueva Venta</a>
+    </div>
+    
+    {% if ventas %}
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha</th>
+                    <th>Usuario</th>
+                    <th>Total</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for venta in ventas %}
+                <tr>
+                    <td>{{ venta.id }}</td>
+                    <td>{{ venta.fecha|date:"d/m/Y H:i" }}</td>
+                    <td>{{ venta.usuario.username }}</td>
+                    <td>${{ venta.total }}</td>
+                    <td>
+                        <a href="{% url 'detalle_venta' venta.id %}" class="btn-sm">Ver Detalle</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No hay ventas registradas.</p>
+        <a href="{% url 'nueva_venta' %}" class="btn">Registrar Venta</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+    
+    .table th, .table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .table th {
+        background-color: var(--highlight-color);
+        font-weight: bold;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    .btn-sm {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 0.875rem;
+    }
+    
+    .btn-sm:hover {
+        background-color: var(--secondary-color);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        background-color: var(--highlight-color);
+        border-radius: 4px;
+    }
+</style>
+{% endblock %}

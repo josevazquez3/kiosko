@@ -1,0 +1,197 @@
+{% extends 'kiosco_app/base.html' %}
+
+{% block content %}
+<div class="lista-usuarios-container">
+    <div class="header-actions">
+        <h1>Gestión de Usuarios</h1>
+        <a href="{% url 'registro_usuario' %}" class="btn">Registrar Nuevo Usuario</a>
+    </div>
+    
+    <div class="filter-section">
+        <form method="get" class="filter-form">
+            <div class="filter-group">
+                <label for="search">Buscar:</label>
+                <input type="text" id="search" name="search" value="{{ request.GET.search }}" placeholder="Nombre o usuario" class="form-control">
+            </div>
+            <div class="filter-group">
+                <label for="tipo">Tipo:</label>
+                <select id="tipo" name="tipo" class="form-control">
+                    <option value="">Todos</option>
+                    <option value="admin" {% if request.GET.tipo == 'admin' %}selected{% endif %}>Administrador</option>
+                    <option value="empleado" {% if request.GET.tipo == 'empleado' %}selected{% endif %}>Empleado</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="estado">Estado:</label>
+                <select id="estado" name="estado" class="form-control">
+                    <option value="">Todos</option>
+                    <option value="activo" {% if request.GET.estado == 'activo' %}selected{% endif %}>Activo</option>
+                    <option value="inactivo" {% if request.GET.estado == 'inactivo' %}selected{% endif %}>Inactivo</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-sm">Filtrar</button>
+            <a href="{% url 'lista_usuarios' %}" class="btn btn-sm btn-secondary">Limpiar</a>
+        </form>
+    </div>
+    
+    {% if usuarios %}
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.username }}</td>
+                    <td>{{ usuario.get_full_name }}</td>
+                    <td>{{ usuario.email }}</td>
+                    <td>
+                        {% if usuario.tipo_usuario == 'admin' %}
+                        <span class="badge badge-primary">Administrador</span>
+                        {% else %}
+                        <span class="badge badge-secondary">Empleado</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if usuario.is_active %}
+                        <span class="badge badge-success">Activo</span>
+                        {% else %}
+                        <span class="badge badge-danger">Inactivo</span>
+                        {% endif %}
+                    </td>
+                    <td class="actions">
+                        <a href="{% url 'editar_usuario' usuario.id %}" class="btn btn-sm">Editar</a>
+                        {% if usuario.is_active %}
+                        <a href="{% url 'desactivar_usuario' usuario.id %}" class="btn btn-sm btn-danger">Desactivar</a>
+                        {% else %}
+                        <a href="{% url 'activar_usuario' usuario.id %}" class="btn btn-sm btn-success">Activar</a>
+                        {% endif %}
+                        {% if request.user != usuario %}
+                        <a href="{% url 'confirmar_eliminar_usuario' usuario.id %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No hay usuarios registrados.</p>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .lista-usuarios-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    
+    .header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .filter-section {
+        margin-bottom: 1.5rem;
+        background-color: var(--highlight-color);
+        padding: 1rem;
+        border-radius: 8px;
+    }
+    
+    .filter-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: flex-end;
+    }
+    
+    .filter-group {
+        flex: 1;
+        min-width: 200px;
+    }
+    
+    .filter-group label {
+        display: block;
+        margin-bottom: 0.3rem;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+    
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+    
+    .table th, .table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .table th {
+        background-color: var(--highlight-color);
+        font-weight: bold;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    .badge {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+    }
+    
+    .badge-primary {
+        background-color: #007bff;
+        color: white;
+    }
+    
+    .badge-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+    
+    .badge-success {
+        background-color: #28a745;
+        color: white;
+    }
+    
+    .badge-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+    
+    .actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        background-color: var(--bg-secondary);
+        border-radius: 4px;
+    }
+</style>
+{% endblock %}

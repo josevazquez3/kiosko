@@ -1,0 +1,78 @@
+{% extends 'kiosco_app/base.html' %}
+
+{% block content %}
+<div class="form-container">
+    <div class="card">
+        <div class="card-header">
+            {% if producto %}
+            Editar Producto
+            {% else %}
+            Nuevo Producto
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="id_nombre">Nombre:</label>
+                    {{ form.nombre }}
+                    {% if form.nombre.errors %}
+                    <div class="message message-error">
+                        {{ form.nombre.errors }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_descripcion">Descripción:</label>
+                    {{ form.descripcion }}
+                    {% if form.descripcion.errors %}
+                    <div class="message message-error">
+                        {{ form.descripcion.errors }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_precio">Precio:</label>
+                    {{ form.precio }}
+                    {% if form.precio.errors %}
+                    <div class="message message-error">
+                        {{ form.precio.errors }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_stock">Stock:</label>
+                    {{ form.stock }}
+                    {% if form.stock.errors %}
+                    <div class="message message-error">
+                        {{ form.stock.errors }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn">Guardar</button>
+                    <a href="{% url 'lista_productos' %}" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 2rem auto;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+</style>
+{% endblock %}

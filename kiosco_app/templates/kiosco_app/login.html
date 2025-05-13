@@ -1,0 +1,39 @@
+{% extends 'kiosco_app/base.html' %}
+
+{% block content %}
+<div class="login-container">
+    <div class="card">
+        <div class="card-header">Iniciar Sesión</div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_username">Usuario:</label>
+                    {{ form.username }}
+                </div>
+                <div class="form-group">
+                    <label for="id_password">Contraseña:</label>
+                    {{ form.password }}
+                </div>
+                {% if form.errors %}
+                <div class="message message-error">
+                    <p>Usuario o contraseña incorrectos. Por favor intente nuevamente.</p>
+                </div>
+                {% endif %}
+                <button type="submit" class="btn">Iniciar Sesión</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .login-container {
+        max-width: 400px;
+        margin: 2rem auto;
+    }
+    
+    header nav {
+        display: none;
+    }
+</style>
+{% endblock %}

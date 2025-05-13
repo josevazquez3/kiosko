@@ -1,0 +1,113 @@
+{% extends 'kiosco_app/base.html' %}
+
+{% block content %}
+<div class="cierre-caja-container">
+    <div class="header-actions">
+        <h1>Cierre de Caja</h1>
+        <a href="{% url 'historial_caja' %}" class="btn btn-secondary">Volver</a>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">Registrar Cierre de Caja</div>
+        <div class="card-body">
+            {% if caja_actual %}
+            <div class="info-group">
+                <span class="info-label">Apertura:</span>
+                <span class="info-value">{{ caja_actual.fecha_hora|date:"d/m/Y H:i" }}</span>
+            </div>
+            <div class="info-group">
+                <span class="info-label">Monto Inicial:</span>
+                <span class="info-value">${{ caja_actual.monto_inicial }}</span>
+            </div>
+            <div class="info-group">
+                <span class="info-label">Ventas del día:</span>
+                <span class="info-value">${{ total_ventas }}</span>
+            </div>
+            <hr>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="id_monto_final">Monto Final:</label>
+                    {{ form.monto_final }}
+                    {% if form.monto_final.errors %}
+                    <div class="message message-error">
+                        {{ form.monto_final.errors }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_observaciones">Observaciones:</label>
+                    {{ form.observaciones }}
+                    {% if form.observaciones.errors %}
+                    <div class="message message-error">
+                        {{ form.observaciones.errors }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-cerrar-caja">Cerrar Caja</button>
+            </form>
+            {% else %}
+            <div class="message message-info">
+                <p>No hay una caja abierta para cerrar.</p>
+            </div>
+            <a href="{% url 'apertura_caja' %}" class="btn">Abrir Caja</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .cierre-caja-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .info-group {
+        display: grid;
+        grid-template-columns: 150px 1fr;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .info-label {
+        font-weight: bold;
+    }
+    
+    hr {
+        margin: 1rem 0;
+        border: 0;
+        border-top: 1px solid var(--border-color);
+    }
+    
+    .btn-primary {
+        background-color: var(--accent-color);
+        color: white;
+    }
+    
+    .btn-cerrar-caja {
+        font-size: 1.1rem;
+        padding: 0.6rem 1.2rem;
+        margin-top: 1rem;
+        width: 100%;
+        text-align: center;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-cerrar-caja:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+</style>
+{% endblock %}
